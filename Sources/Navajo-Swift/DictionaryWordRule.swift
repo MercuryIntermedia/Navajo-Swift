@@ -38,6 +38,9 @@ open class DictionaryWordRule: PasswordRule {
     open func evaluate(_ password: String) -> Bool {
         #if os(OSX)
             return DCSGetTermRangeInString(nil, password as CFString, 0).location != kCFNotFound
+        #elseif os(tvOS)
+            // tvOS doesn't have the UIReferenceLibraryViewController. And we're not using this validation rule anyway, so doing this to make it compile on tvOS
+            return false
         #else
             return UIReferenceLibraryViewController.dictionaryHasDefinition(forTerm: password.lowercased().trimmingCharacters(in: nonLowercaseCharacterSet))
         #endif
